@@ -67,22 +67,22 @@ def test_merge():
     """
     import random
     line = [random.choice([0,2,4,8]) for i in range(20)]
-    # ensure that there's at least one merged pair and that
+    # ensure that there's at least one merged pair (3,5) and that
     # not all results are 0
-    line[3] = line[4] = 2
+    line[2:6] = [4, 2, 0, 2]
 
     result = merge(line)
     merged_pairs = []
     i = 0
     while True:
-        while i < (len(line) - 1) and line[i] != 0: 
+        while i < (len(line) - 1) and line[i] == 0: 
             i += 1
 
         if not i < (len(line) - 1):
             break
 
         j = i + 1
-        while j < len(line) and line[j] != 0: 
+        while j < len(line) and line[j] == 0: 
             j += 1
 
         if not j < len(line): 
@@ -94,10 +94,23 @@ def test_merge():
         else:
             i = j
 
+    def get_state():
+       return "line {}\nresult {}\nmerged {}".format(line, 
+                                                     result, 
+                                                     merged_pairs)
+
+    # check for known merged pair
+    assert filter(lambda pair: pair == (3, 5), merged_pairs),\
+        "merged pair (3, 5) not found\n{}".format(get_state())
+
     # check appropriate number of zeros to the right
     zero_size = len(filter(lambda x: x == 0, line)) + len(merged_pairs)
-    assert result[-(zero_size):] == [0] * zero_size, "wrong number of zeros on right side, expected {}, result: {}".format(zero_size, result)
+    assert result[-(zero_size):] == [0] * zero_size,\
+        "wrong number of zeros {} on right side\n{}".format(zero_size, 
+                                                            get_state())
 
     # check numbers to the left are non zero
-    left_side = result[:zero_size]
-    assert len(filter(lambda x: x == 0, left_side)) == 0, "left side contains zeros {}".format(left_side)
+    left_side = result[:(len(line) - zero_size)]
+    assert len(filter(lambda x: x == 0, left_side)) == 0,\
+        "left side {} contains zeros\n{}".format(left_side, 
+                                                 get_state())
