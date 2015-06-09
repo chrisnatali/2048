@@ -87,22 +87,22 @@ class TwentyFortyEight:
         """
         initialize grid of height, width
         """
-        self.height = grid_height
-        self.width = grid_width
+        self._height = grid_height
+        self._width = grid_width
         # initial tiles for direction from which to traverse
-        self.initial_tiles = {
-                UP: [(0, col) for col in range(self.width)], 
-                DOWN: [(self.height - 1, col) for col in range(self.width)],
-                LEFT: [(row, 0) for row in range(self.height)],
-                RIGHT: [(row, self.width - 1) for row in range(self.height)]
+        self._initial_tiles = {
+                UP: [(0, col) for col in range(self._width)], 
+                DOWN: [(self._height - 1, col) for col in range(self._width)],
+                LEFT: [(row, 0) for row in range(self._height)],
+                RIGHT: [(row, self._width - 1) for row in range(self._height)]
                 }
 
         # number of tiles to traverse per direction
-        self.num_tiles = {
-                UP: self.height, 
-                DOWN: self.height,
-                LEFT: self.width,
-                RIGHT: self.width
+        self._num_tiles = {
+                UP: self._height, 
+                DOWN: self._height,
+                LEFT: self._width,
+                RIGHT: self._width
                 }
 
         self.reset()
@@ -113,8 +113,8 @@ class TwentyFortyEight:
         Reset the game so the grid is empty except for two
         initial tiles.
         """
-        self.grid = [[0 for col in range(self.width)]
-                    for row in range(self.height)]
+        self._grid = [[0 for _ in range(self._width)]
+                    for _ in range(self._height)]
         self.new_tile()
         self.new_tile()
 
@@ -122,7 +122,7 @@ class TwentyFortyEight:
         """
         Return a string representation of the grid for debugging.
         """
-        strings = [[str(val) for val in row] for row in self.grid]
+        strings = [[str(val) for val in row] for row in self._grid]
         # get max len per column for alignment 
         lens = [max(map(len, col)) for col in zip(*strings)]
         # create a format string for each column
@@ -135,13 +135,13 @@ class TwentyFortyEight:
         """
         Get the height of the board.
         """
-        return self.height
+        return self._height
 
     def get_grid_width(self):
         """
         Get the width of the board.
         """
-        return self.width
+        return self._width
 
     def move(self, direction):
         """
@@ -153,12 +153,12 @@ class TwentyFortyEight:
         # iterate over all initial tiles for the direction
         # merge the line associated with the initial tile
         # and put it back in the grid
-        for start in self.initial_tiles[direction]:
+        for start in self._initial_tiles[direction]:
             # to keep track of tiles associated with line elements
             line_grid_map = {}
             line = []
             cur = start
-            for index in range(self.num_tiles[direction]):
+            for index in range(self._num_tiles[direction]):
                 line_grid_map[index] = cur
                 line.append(self.get_tile(*cur))
                 # update row and col
@@ -167,7 +167,7 @@ class TwentyFortyEight:
                 cur = (row, col)
 
             merged = merge(line)
-            for index in range(self.num_tiles[direction]):
+            for index in range(self._num_tiles[direction]):
                 row, col = line_grid_map[index]
                 old_val = self.get_tile(row, col)
                 new_val = merged[index]
@@ -183,9 +183,9 @@ class TwentyFortyEight:
         return tiles (as tuples) that are empty
         """
         tuples = []
-        for row in range(self.height):
-            for col in range(self.width):
-                if self.grid[row][col] == 0:
+        for row in range(self._height):
+            for col in range(self._width):
+                if self._grid[row][col] == 0:
                     tuples.append((row, col))
 
         return tuples
@@ -211,12 +211,12 @@ class TwentyFortyEight:
         """
         Set the tile at position row, col to have the given value.
         """
-        self.grid[row][col] = value
+        self._grid[row][col] = value
 
     def get_tile(self, row, col):
         """
         Return the value of the tile at position row, col.
         """
-        return self.grid[row][col]
+        return self._grid[row][col]
 
 # poc_2048_gui.run_gui(TwentyFortyEight(4, 4))
