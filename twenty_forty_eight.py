@@ -3,7 +3,7 @@ Clone of 2048 game.
 """
 
 import random
-# import poc_2048_gui
+import poc_2048_gui
 
 # Directions, DO NOT MODIFY
 UP = 1
@@ -148,6 +148,8 @@ class TwentyFortyEight:
         Move all tiles in the given direction and add
         a new tile if any tiles moved.
         """
+        # keep track of whether board changed
+        changed = False
         # iterate over all initial tiles for the direction
         # merge the line associated with the initial tile
         # and put it back in the grid
@@ -167,8 +169,14 @@ class TwentyFortyEight:
             merged = merge(line)
             for index in range(self.num_tiles[direction]):
                 row, col = line_grid_map[index]
-                self.set_tile(row, col, merged[index])
-
+                old_val = self.get_tile(row, col)
+                new_val = merged[index]
+                if old_val != new_val:
+                    changed = True
+                    self.set_tile(row, col, merged[index])
+                
+        if changed:
+            self.new_tile()
 
     def _empty_tiles(self):
         """
@@ -212,4 +220,3 @@ class TwentyFortyEight:
         return self.grid[row][col]
 
 # poc_2048_gui.run_gui(TwentyFortyEight(4, 4))
-
